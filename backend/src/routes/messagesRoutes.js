@@ -1,8 +1,8 @@
 import express from 'express';
+import { getAllMessages } from "../controllers/messagesController.js"
 
-// NOTE: ALL OF THE NOTES REST API ENDPOINTS
 const router = express.Router();
 
-router.post('/get-messages', getAllNotes); // body has id:contactorId (string)
+router.post('/get-messages', getAllMessages); // body has id:contactorId (string)
 
 export default router;

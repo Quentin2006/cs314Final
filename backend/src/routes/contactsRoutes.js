@@ -1,11 +1,11 @@
 import express from 'express';
+import { searchContacts, getAllContacts, getContactsForList, deleteContact } from "../controllers/contactsController.js"
 
-// NOTE: ALL OF THE NOTES REST API ENDPOINTS
 const router = express.Router();
 
-router.post('/search',); // body has searchTerm (string)
-router.get('/all-contacts',);
-router.get('/get-contacts-for-list',);
-router.delete('/contacts/delete-dm/:dmId',);
+router.post('/search', searchContacts); // body has searchTerm (string)
+router.get('/all-contacts', getAllContacts);
+router.get('/get-contacts-for-list', getContactsForList);
+router.delete('/contacts/delete-dm/:dmId', deleteContact);
 
 export default router;

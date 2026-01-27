@@ -1,11 +1,12 @@
-import express from 'express';
+function searchContacts(req, res) {
+  const { searchTerm } = req.body;
+}
 
-// NOTE: ALL OF THE NOTES REST API ENDPOINTS
-const router = express.Router();
+function getAllContacts(req, res) {
+}
 
-router.post('/search',); // body has searchTerm (string)
-router.get('/all-contacts',);
-router.get('/get-contacts-for-list',);
-router.delete('/contacts/delete-dm/:dmId',);
+function getContactsForList(req, res) {
+}
 
-export default router;
+function deleteContact(req, res) {
+}

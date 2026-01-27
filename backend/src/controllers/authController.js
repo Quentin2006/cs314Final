@@ -1,12 +1,18 @@
-import express from 'express';
 
-// NOTE: ALL OF THE NOTES REST API ENDPOINTS
-const router = express.Router();
+function signup(req, res) {
+  const { email, password } = req.body;
+}
 
-router.post('/signup',); // body has email and password (both strings)
-router.post('/login',); // body has email and password (both strings)
-router.post('/logout',); // no body
-router.get('/userinfo');
-router.post('/update-profile'); // body has firstName, lastName, color (all strings)
+function login(req, res) {
+  const { email, password } = req.body;
+}
 
-export default router;
+function logout(req, res) {
+}
+
+function userInfo(req, res) {
+}
+
+function updateProfile(req, res) {
+  const { firstName, lastName, color } = req.body;
+}
