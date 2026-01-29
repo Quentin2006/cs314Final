@@ -1,4 +1,0 @@
-
-
-function getAllMessages(req, res) {
-}
