@@ -6,16 +6,23 @@ import mongoose from 'mongoose';
 const messageSchema = new mongoose.Schema(
   {
     sender: {
-      type: Number,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     recipient: {
-      type: Number,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     content: {
       type: String,
       required: true,
+    },
+    messageType: {
+      type: String,
+      enum: ['text', 'file', 'image'],
+      default: 'text'
     }
   },
   { timestamps: true } // createdAt and updatedAt feild

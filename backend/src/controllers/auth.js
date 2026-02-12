@@ -7,7 +7,7 @@ export async function signup(req, res) {
     // check if we have email or pass
     if (!email || !password) {
       res.status(400).json({ message: "Missing email or password" });
-      return
+      return;
     }
 
     const existingUser = await User.findOne({ email });
@@ -20,10 +20,9 @@ export async function signup(req, res) {
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (error) {
-    console.error("Error in signup auth controller: ", error.message)
+    console.error("Error in signup auth controller: ", error.message);
     res.status(500).json({ message: "Server Error", error: error.message });
   }
-  return
 }
 
 export async function login(req, res) {
@@ -33,7 +32,7 @@ export async function login(req, res) {
     // check if we have email or pass
     if (!email || !password) {
       res.status(400).json({ message: "Missing email or password" });
-      return
+      return;
     }
 
     const user = await User.findOne({ email });
@@ -45,12 +44,12 @@ export async function login(req, res) {
     }
 
   } catch (error) {
-    console.error("Error in login auth controller: ", error.message)
+    console.error("Error in login auth controller: ", error.message);
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 }
 
-export function logout(req, res) {
+export async function logout(req, res) {
   res.status(200).json({ message: "Logged out" });
 }
 
@@ -61,12 +60,12 @@ export async function getUserInfo(req, res) {
     const user = await User.findById(id);
     if (!user) {
       res.status(404).json({ message: "No user found with id" });
+      return;
     }
-    else {
-      res.status(200).json(user);
-    }
+
+    res.status(200).json(user);
   } catch (error) {
-    console.error("Error in getUserInfo auth controller: ", error.message)
+    console.error("Error in getUserInfo auth controller: ", error.message);
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 }
@@ -79,13 +78,13 @@ export async function updateProfile(req, res) {
 
     if (!updatedUser) {
       res.status(404).json({ message: "No user found with id" });
-    }
-    else {
-      res.status(200).json(updatedUser);
+      return;
     }
 
+    res.status(200).json(updatedUser);
+
   } catch (error) {
-    console.error("Error in updateProfile auth controller: ", error.message)
+    console.error("Error in updateProfile auth controller: ", error.message);
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 }

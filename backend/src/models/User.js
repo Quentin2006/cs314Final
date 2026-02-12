@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 // 1 - make schema
 // 2 - create model off schema
-const messageSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -32,7 +32,7 @@ const messageSchema = new mongoose.Schema(
 )
 
 
-const Message = mongoose.model('Message', messageSchema);
+const User = mongoose.model('User', userSchema);
 
-export default Message;
+export default User;
 
