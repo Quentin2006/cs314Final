@@ -1,21 +1,19 @@
 import mongoose from 'mongoose';
 
-
-// 1 - make schema
-// 2 - create model off schema
 const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      required: true,
+      default: '',
     },
     lastName: {
       type: String,
-      required: true,
+      default: '',
     },
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -23,16 +21,20 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
+      default: '',
     },
     color: {
       type: String,
+      default: '',
+    },
+    profileSetup: {
+      type: Boolean,
+      default: false,
     },
   },
-  { timestamps: true } // createdAt and updatedAt feild
-)
-
+  { timestamps: true }
+);
 
 const User = mongoose.model('User', userSchema);
 
 export default User;
-

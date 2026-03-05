@@ -1,69 +1,135 @@
-import Contact from '../models/Contact.js';
+import mongoose from 'mongoose';
+import User from '../models/User.js';
+import Message from '../models/Message.js';
 
 export async function searchContacts(req, res) {
   try {
     const { searchTerm } = req.body;
 
     if (!searchTerm) {
-      res.status(400).json({ message: "Search term is required" });
-      return;
+      return res.status(400).json({ message: 'Search term is required' });
     }
 
+    const userId = req.userId;
     const searchRegex = new RegExp(searchTerm, 'i');
-    const contacts = await Contact.find({
+
+    const contacts = await User.find({
+      _id: { $ne: userId },
       $or: [
         { firstName: searchRegex },
         { lastName: searchRegex },
-        { email: searchRegex }
-      ]
-    });
+        { email: searchRegex },
+      ],
+    }).select('_id firstName lastName email');
 
-    res.status(200).json(contacts);
+    return res.status(200).json({ contacts });
   } catch (error) {
-    console.error("Error in searchContacts controller: ", error.message);
-    res.status(500).json({ message: "Server Error", error: error.message });
+    console.error('Error in searchContacts:', error.message);
+    return res.status(500).json({ message: 'Server Error', error: error.message });
   }
 }
 
-export async function getAllContacts(_, res) {
+export async function getAllContacts(req, res) {
   try {
-    const contacts = await Contact.find();
-    res.status(200).json(contacts);
+    const userId = req.userId;
+
+    const users = await User.find({ _id: { $ne: userId } }).select('_id firstName lastName');
+
+    const contacts = users.map((u) => ({
+      label: `${u.firstName} ${u.lastName}`.trim() || u._id.toString(),
+      value: u._id.toString(),
+    }));
+
+    return res.status(200).json({ contacts });
   } catch (error) {
-    console.error("Error in getAllContacts controller: ", error.message);
-    res.status(500).json({ message: "Server Error", error: error.message });
+    console.error('Error in getAllContacts:', error.message);
+    return res.status(500).json({ message: 'Server Error', error: error.message });
   }
 }
 
-export async function getContactsForList(_, res) {
+export async function getContactsForList(req, res) {
   try {
-    const contacts = await Contact.find({}, '_id firstName lastName email');
-    res.status(200).json(contacts);
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID not found' });
+    }
+
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+
+    const contacts = await Message.aggregate([
+      {
+        $match: {
+          $or: [{ sender: userObjectId }, { recipient: userObjectId }],
+        },
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $group: {
+          _id: {
+            $cond: {
+              if: { $eq: ['$sender', userObjectId] },
+              then: '$recipient',
+              else: '$sender',
+            },
+          },
+          lastMessageTime: { $first: '$createdAt' },
+        },
+      },
+      {
+        $sort: { lastMessageTime: -1 },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'contactInfo',
+        },
+      },
+      {
+        $unwind: '$contactInfo',
+      },
+      {
+        $project: {
+          _id: '$contactInfo._id',
+          firstName: '$contactInfo.firstName',
+          lastName: '$contactInfo.lastName',
+          email: '$contactInfo.email',
+          image: '$contactInfo.image',
+          color: '$contactInfo.color',
+          lastMessageTime: 1,
+        },
+      },
+    ]);
+
+    return res.status(200).json({ contacts });
   } catch (error) {
-    console.error("Error in getContactsForList controller: ", error.message);
-    res.status(500).json({ message: "Server Error", error: error.message });
+    console.error('Error in getContactsForList:', error.message);
+    return res.status(500).json({ message: 'Server Error', error: error.message });
   }
 }
 
-export async function deleteContact(req, res) {
+export async function deleteDM(req, res) {
   try {
     const { dmId } = req.params;
+    const userId = req.userId;
 
     if (!dmId) {
-      res.status(400).json({ message: "Contact ID is required" });
-      return;
+      return res.status(400).json({ message: 'Missing or invalid dmId' });
     }
 
-    const deletedContact = await Contact.findByIdAndDelete(dmId);
+    await Message.deleteMany({
+      $or: [
+        { sender: userId, recipient: dmId },
+        { sender: dmId, recipient: userId },
+      ],
+    });
 
-    if (!deletedContact) {
-      res.status(400).json({ message: "Contact not found" });
-      return;
-    }
-
-    res.status(200).json({ message: "Contact deleted successfully" });
+    return res.status(200).json({ message: 'DM deleted successfully' });
   } catch (error) {
-    console.error("Error in deleteContact controller: ", error.message);
-    res.status(500).json({ message: "Server Error", error: error.message });
+    console.error('Error in deleteDM:', error.message);
+    return res.status(500).json({ message: 'Server Error', error: error.message });
   }
 }

@@ -1,24 +1,38 @@
 import Message from '../models/Message.js';
 
-export async function getAllMessages(_, res) {
+export async function getAllMessages(req, res) {
   try {
-    const { id } = req.body;
+    const userId = req.userId;
+    const { id: contactId } = req.body;
 
-    if (!id) {
-      res.status(400).json({ message: "Contact ID is required" });
-      return;
+    if (!userId || !contactId) {
+      return res.status(400).json({ message: 'Missing one or both user IDs' });
     }
 
     const messages = await Message.find({
       $or: [
-        { sender: id },
-        { recipient: id }
-      ]
-    }).sort({ createdAt: -1 });
+        { sender: userId, recipient: contactId },
+        { sender: contactId, recipient: userId },
+      ],
+    }).sort({ createdAt: 1 });
 
-    res.status(200).json(messages);
+    return res.status(200).json({ messages });
   } catch (error) {
-    console.error("Error in getAllMessages controller: ", error.message);
-    res.status(500).json({ message: "Server Error", error: error.message });
+    console.error('Error in getAllMessages:', error.message);
+    return res.status(500).json({ message: 'Server Error', error: error.message });
+  }
+}
+
+export async function uploadFile(req, res) {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file provided' });
+    }
+
+    const filePath = `uploads/files/${req.file.filename}`;
+    return res.status(200).json({ filePath });
+  } catch (error) {
+    console.error('Error in uploadFile:', error.message);
+    return res.status(500).json({ message: 'Server Error', error: error.message });
   }
 }

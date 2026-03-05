@@ -1,9 +1,14 @@
 {
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie": "^1.1.1",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.14.3",
+    "multer": "^2.1.1",
     "socket.io": "^4.8.3"
   },
   "name": "backend",
@@ -11,7 +16,7 @@
   "description": "",
   "main": "./src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --forceExit --detectOpenHandles",
     "start": "node ./src/server.js",
     "dev": "nodemon ./src/server.js"
   },
@@ -20,6 +25,13 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "babel-jest": "^30.2.0",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^11.0.1",
+    "nodemon": "^3.1.11",
+    "socket.io-client": "^4.8.3",
+    "supertest": "^7.2.2"
   }
 }

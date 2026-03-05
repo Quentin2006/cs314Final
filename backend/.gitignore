@@ -1,5 +1,11 @@
 .env
 
+# Uploaded files (keep directories via .gitkeep)
+uploads/profiles/*
+!uploads/profiles/.gitkeep
+uploads/files/*
+!uploads/files/.gitkeep
+
 # Logs
 logs
 *.log

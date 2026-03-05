@@ -1,8 +1,5 @@
 import mongoose from 'mongoose';
 
-
-// 1 - make schema
-// 2 - create model off schema
 const messageSchema = new mongoose.Schema(
   {
     sender: {
@@ -13,23 +10,34 @@ const messageSchema = new mongoose.Schema(
     recipient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: false,
     },
     content: {
       type: String,
-      required: true,
+      required: false,
     },
     messageType: {
       type: String,
-      enum: ['text', 'file', 'image'],
-      default: 'text'
-    }
+      enum: ['text', 'file'],
+      default: 'text',
+    },
+    fileUrl: {
+      type: String,
+      default: undefined,
+    },
+    audioUrl: {
+      type: String,
+      default: undefined,
+    },
+    channelId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Channel',
+      required: false,
+    },
   },
-  { timestamps: true } // createdAt and updatedAt feild
-)
-
+  { timestamps: true }
+);
 
 const Message = mongoose.model('Message', messageSchema);
 
 export default Message;
-
