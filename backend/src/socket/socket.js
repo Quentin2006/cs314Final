@@ -29,7 +29,7 @@ const getUserInfo = async (userId) => {
 export const setupSocket = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: 'http://localhost:3000',
+      origin: ['http://localhost:3000', 'http://192.168.0.229:3000'],
       methods: ['GET', 'POST'],
       credentials: true,
     },
