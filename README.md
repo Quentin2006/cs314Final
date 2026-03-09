@@ -59,11 +59,7 @@ JWT_SECRET=<your-jwt-secret>
 Start the server:
 
 ```bash
-# Production
 npm start
-
-# Development (auto-restart with nodemon)
-npm run dev
 ```
 
 The backend runs on `http://localhost:5001` by default.
@@ -84,8 +80,6 @@ The frontend is served as a static build on `http://localhost:3000`.
 cd backend
 npm test
 ```
-
-Tests use an in-memory MongoDB instance (via `mongodb-memory-server`), so no external database is required.
 
 ---
 
@@ -324,11 +318,11 @@ All tests run against an in-memory MongoDB instance -- no external database or s
 
 ## Challenges Faced
 
-### CORS (Cross-Origin Resource Sharing)
+### COR
 
-One of the first major hurdles was configuring CORS correctly between the React frontend (port 3000) and the Express backend (port 5001). Because authentication relies on httpOnly cookies, the browser enforces strict rules around cross-origin cookie transmission. This required setting `credentials: true` in the CORS configuration and ensuring the frontend sends requests with `withCredentials`. Socket.IO also required its own separate CORS configuration with an explicit origin and `credentials: true` to allow cookie-based authentication on WebSocket connections.
+One of the first major hurdles was configuring CORS correctly between the React frontend (port 3000) and the Express backend (port 5001). Because authentication relies on HTTP-only cookies, the browser enforces strict rules around cross-origin cookie transmission. This required setting `credentials: true` in the CORS configuration and ensuring the frontend sends requests with `withCredentials`. Socket.IO also required its own separate CORS configuration with an explicit origin and `credentials: true` to allow cookie-based authentication on WebSocket connections.
 
-### ngrok (Tunneling for External Access)
+### ngrok
 
 During development and testing, we used **ngrok** to expose the local backend server to external networks. This introduced additional CORS and cookie challenges -- ngrok provides an HTTPS URL on a different domain, which means cookies set with `sameSite: 'Lax'` and `secure: false` would not be sent by the browser. Configuring the tunnel to work correctly with our cookie-based auth system required careful attention to these settings and testing across different network configurations.
 
@@ -350,7 +344,7 @@ The solution involved a `connectSocket()` helper and careful use of `Promise`-ba
 
 ### Pre-Built Frontend Integration
 
-The React frontend was compiled as a Vite production bundle, meaning the source code was not available for modification in this repository. Any backend changes -- particularly to Socket.IO event names or API response shapes -- had to match the existing frontend contract exactly. For example, the channel message event is intentionally spelled `recieve-channel-message` (a typo) to match the frontend's expected event name, since changing it would break the application.
+The React frontend was compiled as a Vite production bundle, meaning the source code was not available for modification in this repository. Any backend changes, particularly to Socket.IO event names or API response shapes, had to match the existing frontend contract exactly.
 
 ---
 
@@ -375,7 +369,7 @@ A full channel (group chat) system with:
 - **Channel message broadcasting** -- messages are delivered to all online members via Socket.IO
 - **Real-time notifications** -- when a channel is created, all members are notified instantly via the `new-channel-added` socket event
 
-### Smart Contact List (MongoDB Aggregation)
+### Contact List (MongoDB Aggregation)
 
 The "contacts for list" endpoint uses a sophisticated MongoDB aggregation pipeline that:
 
@@ -397,17 +391,3 @@ Users can customize their profiles with:
 ### DM Conversation Deletion
 
 Users can delete their entire direct message history with a specific contact through the `DELETE /api/contacts/delete-dm/:dmId` endpoint, which removes all messages in both directions between the two users.
-
-### Frontend UI Enhancements
-
-The React frontend includes:
-
-- **Lottie animations** for loading states and visual polish
-- **Radix UI** components for accessible, well-designed interface elements
-- **Sonner** toast notifications for user feedback on actions (message sent, errors, etc.)
-
----
-
-## License
-
-ISC
