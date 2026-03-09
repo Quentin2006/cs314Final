@@ -320,7 +320,7 @@ All tests run against an in-memory MongoDB instance -- no external database or s
 
 ### COR
 
-One of the first major hurdles was configuring CORS correctly between the React frontend (port 3000) and the Express backend (port 5001). Because authentication relies on HTTP-only cookies, the browser enforces strict rules around cross-origin cookie transmission. This required setting `credentials: true` in the CORS configuration and ensuring the frontend sends requests with `withCredentials`. Socket.IO also required its own separate CORS configuration with an explicit origin and `credentials: true` to allow cookie-based authentication on WebSocket connections.
+One of the first major hurdles was configuring CORS correctly between the React frontend (port 3000) and the Express backend (port 8747). Because authentication relies on HTTP-only cookies, the browser enforces strict rules around cross-origin cookie transmission. This required setting `credentials: true` in the CORS configuration and ensuring the frontend sends requests with `withCredentials`. Socket.IO also required its own separate CORS configuration with an explicit origin and `credentials: true` to allow cookie-based authentication on WebSocket connections.
 
 ### ngrok
 
